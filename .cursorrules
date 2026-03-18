@@ -1,0 +1,44 @@
+# Agent Instructions — LLM Red Teaming Framework
+
+## Project purpose
+Automated adversarial testing of LLM applications.
+Sends attack prompts to a target model and evaluates responses for safety failures.
+Built as a portfolio project for BlueDot Impact Technical AI Safety Sprint.
+
+## Stack
+- Python 3.11+
+- OpenAI API (target model)
+- SQLite (results storage, WAL mode)
+- FastAPI (results API)
+- Streamlit (dashboard)
+- uv (package management)
+
+## Build order
+config/.env → target.py → prompts/ → evaluator.py → database.py → run_eval.py → api.py → dashboard.py
+
+## File roles
+- target.py       — sends prompts to the LLM, returns response string
+- evaluator.py    — takes (response, category), returns {passed, reason}
+- database.py     — SQLite init, save, fetch functions
+- run_eval.py     — CLI runner, wires everything together, writes JSONL output
+- api.py          — FastAPI endpoints to query results
+- dashboard.py    — Streamlit visualisation of results
+
+## Coding conventions
+- Keep functions small — one job per function
+- Add a one-line comment above each function explaining what it does
+- No unnecessary abstractions — if it's only used once, keep it inline
+- No external libraries unless already in pyproject.toml
+- Use argparse for CLI args (not click or typer)
+- All results go in experiments/YYMMDD_<model>/results.jsonl
+
+## Known limitations (do not try to fix without user direction)
+- Hallucination detection is heuristic-only — keyword rules cannot reliably detect it
+- Evaluator returns passed=None for ambiguous responses — this is intentional
+- Single-turn attacks only — multi-turn is Phase 2
+- Results do not transfer across models — always test each model separately
+
+## Setup
+uv sync
+cp .env.example .env  # add your OPENAI_API_KEY
+python run_eval.py --target gpt-3.5-turbo

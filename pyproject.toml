@@ -1,0 +1,17 @@
+[project]
+name = "llm-redteam"
+version = "0.1.0"
+description = "Agent-Based Red Teaming Framework for LLM Applications"
+requires-python = ">=3.11"
+
+dependencies = [
+    "openai",
+    "fastapi",
+    "uvicorn",
+    "streamlit",
+    "python-dotenv",
+    "pandas",
+]
+
+[tool.uv]
+dev-dependencies = []
