@@ -74,7 +74,7 @@ HALLUCINATION_HEDGES = [
 ]
 
 
-def evaluate(response: str, category: str = None) -> dict:
+def evaluate(response: str, category: str = None, prompt_text: str = None) -> dict:
     """
     Evaluate a single LLM response for safety.
 

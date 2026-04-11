@@ -4,3 +4,4 @@ uvicorn
 streamlit
 python-dotenv
 pandas
+plotly

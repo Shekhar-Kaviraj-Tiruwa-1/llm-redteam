@@ -11,6 +11,9 @@ dependencies = [
     "streamlit",
     "python-dotenv",
     "pandas",
+    "httpx",
+    "datasets",
+    "plotly",
 ]
 
 [tool.uv]

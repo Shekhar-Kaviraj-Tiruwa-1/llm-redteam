@@ -16,32 +16,38 @@ def get_connection():
 
 
 def init_db():
-    """Create the results table if it doesn't already exist."""
+    """Create the results table if it doesn't exist, and migrate schema if needed."""
     conn = get_connection()
     conn.execute("""
         CREATE TABLE IF NOT EXISTS results (
-            id           INTEGER PRIMARY KEY AUTOINCREMENT,
-            run_id       TEXT NOT NULL,
-            category     TEXT NOT NULL,
-            prompt_text  TEXT NOT NULL,
-            response     TEXT NOT NULL,
-            passed       INTEGER,
-            reason       TEXT,
-            model        TEXT,
-            created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            run_id         TEXT NOT NULL,
+            category       TEXT NOT NULL,
+            prompt_text    TEXT NOT NULL,
+            response       TEXT NOT NULL,
+            passed         INTEGER,
+            reason         TEXT,
+            model          TEXT,
+            evaluator_type TEXT DEFAULT 'keyword',
+            created_at     DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    # Add evaluator_type to existing databases that pre-date Phase 2
+    try:
+        conn.execute("ALTER TABLE results ADD COLUMN evaluator_type TEXT DEFAULT 'keyword'")
+    except Exception:
+        pass  # Column already exists — safe to ignore
     conn.commit()
     conn.close()
 
 
-def save_result(run_id, category, prompt_text, response, passed, reason, model):
+def save_result(run_id, category, prompt_text, response, passed, reason, model, evaluator_type="keyword"):
     """Insert a single evaluation result into the database."""
     conn = get_connection()
     conn.execute("""
-        INSERT INTO results (run_id, category, prompt_text, response, passed, reason, model)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (run_id, category, prompt_text, response, passed, reason, model))
+        INSERT INTO results (run_id, category, prompt_text, response, passed, reason, model, evaluator_type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (run_id, category, prompt_text, response, passed, reason, model, evaluator_type))
     conn.commit()
     conn.close()
 

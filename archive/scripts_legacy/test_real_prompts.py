@@ -1,8 +1,13 @@
-# Sends 2 prompts from each category to GPT and evaluates the responses
-# Run: python test_real_prompts.py
+# Quick smoke test — sends 2 prompts from each category to GPT and evaluates responses
+# Uses the spike evaluator (not production evaluator.py) for lightweight local testing
+# Run from project root: python scripts/test_real_prompts.py
 
 import sys
-sys.path.insert(0, ".")
+import os
+
+# Ensure both project root and scripts/ are on the path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from target import call_llm
 from evaluator_spike import evaluate

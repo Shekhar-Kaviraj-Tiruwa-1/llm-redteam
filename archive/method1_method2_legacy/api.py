@@ -1,20 +1,24 @@
 # FastAPI server exposing evaluation results from the database
 # Run: uvicorn api:app --reload
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from database import init_db, get_results
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Initialise the database on startup."""
+    init_db()
+    yield
+
 
 app = FastAPI(
     title="LLM Red Team API",
     description="Query adversarial evaluation results",
-    version="0.1.0"
+    version="0.1.0",
+    lifespan=lifespan,
 )
-
-
-@app.on_event("startup")
-def startup():
-    """Initialise the database on server start."""
-    init_db()
 
 
 @app.get("/")
