@@ -5,3 +5,5 @@ __pycache__/
 !data/results_method3.db
 venv/
 .venv/
+.venv313/
+uv.lock
